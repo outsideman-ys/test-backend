@@ -24,6 +24,7 @@ object DatabaseFactory {
             .locations("classpath:db/migration")
 //            .baselineOnMigrate(true)
             .outOfOrder(true)
+            .cleanDisabled(appConfig.propertyOrNull("flyway.cleanDisabled")?.getString()?.toBoolean() ?: true)
             .load()
 
         if (appConfig.property("flyway.clean").getString().toBoolean()) {

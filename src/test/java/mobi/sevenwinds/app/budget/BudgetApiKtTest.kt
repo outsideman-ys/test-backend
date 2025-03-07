@@ -30,7 +30,12 @@ class BudgetApiKtTest : ServerTest() {
             .queryParam("limit", 3)
             .queryParam("offset", 1)
             .get("/budget/year/2020/stats")
-            .toResponse<BudgetYearStatsResponse>().let { response ->
+            .then()
+            .statusCode(200)
+
+            .extract().`as`(BudgetYearStatsResponse::class.java)
+            .let { response ->
+
                 println("${response.total} / ${response.items} / ${response.totalByType}")
 
                 Assert.assertEquals(5, response.total)
@@ -50,8 +55,13 @@ class BudgetApiKtTest : ServerTest() {
         // expected sort order - month ascending, amount descending
 
         RestAssured.given()
+            .queryParam("sort", "month,amount.desc")
             .get("/budget/year/2020/stats?limit=100&offset=0")
-            .toResponse<BudgetYearStatsResponse>().let { response ->
+            .then()
+            .statusCode(200)
+
+            .extract().`as`(BudgetYearStatsResponse::class.java)
+            .let { response ->
                 println(response.items)
 
                 Assert.assertEquals(30, response.items[0].amount)
